@@ -15,6 +15,8 @@ Steps:
 4. Change to serverless by changing the dbInstanceClass of the instance to 'db.serverless' and adding serverlessV2ScalingConfiguration to the cluster 
 5. Create global db with the writer cluster 
 
+SecondaryClusterStack has a cluster and an instance will be deployed in a different region (us-east-1 in demo), that will be added to the global db
+
 In all the steps make sure to keep the cluster resource and instance, if it is commented then CloudFormation will delete the resource. Also the identifiers and properties that trigger a replacement update must not be changed. 
 
 Before every update, run ```cdk diff``` to check the changes that will arise during the deployment. 
