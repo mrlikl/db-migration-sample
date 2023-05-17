@@ -22,5 +22,5 @@ In all the steps make sure to keep the cluster resource and instance, if it is c
 Before every update, run ```cdk diff``` to check the changes that will arise during the deployment. 
 
 References:
-[1] AWS::RDS::DBCluster - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbcluster.html
-[2] AWS::RDS::DBInstance - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbinstance.html
+1. AWS::RDS::DBCluster - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbcluster.html
+2. AWS::RDS::DBInstance - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-rds-dbinstance.html
