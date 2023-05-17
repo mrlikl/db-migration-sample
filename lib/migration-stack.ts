@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as cr from 'aws-cdk-lib/custom-resources';
 import * as rds from 'aws-cdk-lib/aws-rds';
+import * as _lambda from 'aws-cdk-lib/aws-lambda';
 
 export class MigrationStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -12,12 +13,13 @@ export class MigrationStack extends cdk.Stack {
       DBClusterIdentifier: 'serverless-test', //cluster name from ClusterStack
       DBClusterSnapshotIdentifier: 'serverless-test-snapshot'
     };
+
     const create_snapshot = new cr.AwsCustomResource(this, "CreateSnapshot", {
       onUpdate: {
         service: "RDS",
         action: "createDBClusterSnapshot",
         parameters: params,
-        physicalResourceId: cr.PhysicalResourceId.of("snapshotcreate")
+        physicalResourceId: cr.PhysicalResourceId.fromResponse('Path')
       },
       policy: cr.AwsCustomResourcePolicy.fromSdkCalls({
         resources: cr.AwsCustomResourcePolicy.ANY_RESOURCE,
@@ -36,13 +38,14 @@ export class MigrationStack extends cdk.Stack {
         engine: 'aurora-postgresql',
         engineMode: 'provisioned',
         engineVersion: '11.19',
-        snapshotIdentifier: params.DBClusterSnapshotIdentifier
+        snapshotIdentifier: params.DBClusterSnapshotIdentifier,
+        port: 5432
       });
 
     const writer_db_instance = new rds.CfnDBInstance(this, 'WriterInstance', {
       dbClusterIdentifier: writer_cluster.ref,
       engine: 'aurora-postgresql',
-      dbInstanceClass: 'db.t2.medium',
+      dbInstanceClass: 'db.t3.medium',
       dbInstanceIdentifier: 'writerinstance'
     });
 
@@ -56,8 +59,15 @@ export class MigrationStack extends cdk.Stack {
     //         snapshotIdentifier: params.DBClusterSnapshotIdentifier,
     //     });
 
+    // const writer_db_instance = new rds.CfnDBInstance(this, 'WriterInstance', {
+    //   dbClusterIdentifier: writer_cluster.ref,
+    //   engine: 'aurora-postgresql',
+    //   dbInstanceClass: 'db.t3.medium',
+    //   dbInstanceIdentifier: 'writerinstance'
+    // });
 
-    //Step-4 Change to serverless
+
+    //Step-4 Change to serverless 
 
     // const writer_cluster = new rds.CfnDBCluster(this, 'WriterCluster',
     //     {
@@ -82,10 +92,10 @@ export class MigrationStack extends cdk.Stack {
 
     // Step 5 - Create global db with the writer cluster 
 
-    const global_cluster = new rds.CfnGlobalCluster(this, 'GlobalCluster', {
-      globalClusterIdentifier: 'globaldb',
-      sourceDbClusterIdentifier: writer_cluster.ref
-    });
+    // const global_cluster = new rds.CfnGlobalCluster(this, 'GlobalCluster', {
+    //   globalClusterIdentifier: 'globaldb',
+    //   sourceDbClusterIdentifier: writer_cluster.ref
+    // });
 
   }
 }

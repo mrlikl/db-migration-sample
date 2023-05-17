@@ -6,6 +6,7 @@ import { MigrationStack } from '../lib/migration-stack';
 import { SecondaryClusterStack } from '../lib/secondary-stack';
 
 const app = new cdk.App();
+
 new ClusterStack(app, 'ClusterStack', {
   env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'eu-west-1' },
 });
